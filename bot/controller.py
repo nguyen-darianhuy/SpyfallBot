@@ -42,7 +42,7 @@ async def teams(ctx, *players): #players is discord.Member or str
         except AttributeError:
             message += "{} ".format(teammate)
     
-    await bot.say(message, delete_after=bot.msg_expire*2)
+    await bot.say(message, delete_after=bot.msg_expire*3)
 
 @bot.command()
 async def roll(dice : str):
@@ -55,11 +55,6 @@ async def roll(dice : str):
 
     result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
     await bot.say(result, delete_after=bot.msg_expire)
-
-@bot.command(description='For when you wanna settle the score some other way')
-async def choose(*choices : str):
-    """Chooses between multiple choices."""
-    await bot.say(random.choice(choices), delete_after=bot.msg_expire)
 
 @bot.command()
 async def joined(member : discord.Member):
@@ -87,21 +82,45 @@ async def shutdown():
 @bot.command(pass_context=True)
 async def join(ctx):
     try:
-        bot.spyfall.add_player(ctx.message.author)
-    except RuntimeError as e:
-        await bot.say(e)
+        player = ctx.message.author
+        bot.spyfall.add_player(player)
+        await bot.say("{} joined Spyfall! There are now {} players.".format(player.mention, len(bot.spyfall.players)))
+    except (RuntimeError, ValueError) as e:
+        await bot.say(e, delete_after=bot.msg_expire)
+        
 
 @bot.command(pass_context=True)        
 async def leave(ctx):
     try:
-        bot.spyfall.remove_player(ctx.message.author)
-    except RuntimeError as e:
-        await bot.say(e)
+        player = ctx.message.author
+        bot.spyfall.remove_player(player)
+        await bot.say("{} left Spyfall! There are now {} players.".format(player.mention, len(bot.spyfall.players)))
+    except (RuntimeError, ValueError) as e:
+        await bot.say(e, delete_after=bot.msg_expire)
         
-@bot.command()        
-async def start():
+@bot.command()
+async def players():
+    await bot.say(bot.spyfall.playerlist())
+    
+@bot.command(pass_context=True)        
+async def start(ctx, use_dlc=False):
+    if not bot.spyfall.players:
+        voice_members = ctx.message.author.voice_channel.voice_members
+        if voice_members:
+            map(bot.spyfall.add_player, voice_members)
+        else:
+            await bot.say("```Error: There are no players!```")
     try:
-        await bot.spyfall.start()
+        await bot.say("**Spyfall has begun!**")
+        await bot.spyfall.start(use_dlc)
+    except RuntimeError as e:
+        await bot.say(e, delete_after=bot.msg_expire)
+        
+@bot.command(pass_context=True)
+async def stop(reuse_players=True):
+    try: 
+        bot.spyfall.stop(reuse_players)
+        await bot.say("```Manually ended the Spyfall round.```")
     except RuntimeError as e:
         await bot.say(e)
         

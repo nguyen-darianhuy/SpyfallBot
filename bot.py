@@ -14,7 +14,7 @@ class SpyfallBot(commands.Bot):
     msg_expire : float
         The amount of time in seconds before the bot deletes its own message.
     """
-    def __init__(self, command_prefix, msg_expire=0, description=None, **options):
+    def __init__(self, command_prefix, msg_expire=0, **options):
         description = '''A bot that runs Spyfall. Built by Darian. Runs on Python.'''
         super().__init__(command_prefix, description=description)
         self.msg_expire = msg_expire

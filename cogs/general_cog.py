@@ -5,13 +5,7 @@ import random
 class General:
     def __init__(self, bot):
         self.bot = bot
-
-    async def on_ready(self):
-        print('Logged in as')
-        print(self.bot.user.name)
-        print('------')
-        await self.bot.start_cleaning_games()
-
+        
     @commands.command(pass_context=True)
     async def teams(self, ctx, *players): #players is discord.Member or str
         """Chooses teams randomly. If the caller is in a voice channel, list will be taken from fellow voicers."""

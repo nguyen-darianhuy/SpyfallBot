@@ -1,4 +1,3 @@
-
 Airplane (First Class Passenger, Air Marshall, Mechanic, Economy Class Passenger, Air Hostess, Second Pilot, Captain)
 
 Bank (Armored Car Driver, Manager, Consultant, Customer, Robber, Security Guard, Teller)
@@ -7,7 +6,7 @@ Beach (Beach Waitress, Kite Surfer, Lifeguard, Thief, Beach Goer, Beach Photogra
 
 Casino (Bartender, Head Security Guard, Bouncer, Manager, Hustler, Dealer, Gambler)
 
-Cathedral: (Priest, Beggar, Sinner, Parishioner, Tourist, Sponsor, Chorister)
+Cathedral (Priest, Beggar, Sinner, Parishioner, Tourist, Sponsor, Chorister)
 
 Circus Tent (Acrobat, Animal Trainer, Magician, Visitor, Fire Eater, Clown, Juggler)
 

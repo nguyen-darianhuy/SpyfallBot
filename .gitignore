@@ -2,9 +2,7 @@
 *.pyc
 ~*/
 
-discord/
-docs/
-examples/
+lib/
 audio_cache/
 dectalk/
 

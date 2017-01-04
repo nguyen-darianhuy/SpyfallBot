@@ -1,9 +1,8 @@
 import discord, sys
-import spyfallbot
 import asyncio
 import random, threading
 
-class Spyfall:
+class Game:
     """Represents a game of Spyfall."""
     def __init__(self, bot, host, game_time=480):
         self.players = []
@@ -34,6 +33,7 @@ class Spyfall:
             "Hogwarts", "Death Star", "World War II Battlefield", "Senior Prom", "Terrorist Training Camp"]
         self.dlc_added = False
         self.running = False
+            
     def add_player(self, player : discord.Member):
         if self.running:
             raise RuntimeError("```ERR: {}'s Game is running!```".format(self.host.display_name))
@@ -76,6 +76,18 @@ class Spyfall:
         
         if not reuse_players:
             players = []
-     
-    def format_playerlist(self) -> str:
+    
+    @property
+    def player_names(self) -> str:
         return [player.display_name for player in self.players] if self.players else ":frowning:"
+        
+    def declare_players_msg(self) -> str:
+        msg = ""
+        player_amt = len(self.players)
+        if player_amt > 1:
+            msg = "There are now {} players".format(player_amt)
+        elif player_amt == 1:
+            msg = "There is now 1 player".format(player_amt)
+        else:
+            msg = "No one is playing!"
+        return msg

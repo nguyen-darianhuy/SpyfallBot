@@ -1,6 +1,6 @@
 import asyncio
 import discord, sys
-import spyfall
+from cogs.spyfall import game
 from discord.ext import commands
 import random
 
@@ -19,6 +19,11 @@ class SpyfallBot(commands.Bot):
         super().__init__(command_prefix, description=description)
         self.msg_expire = msg_expire
         self.games = {}
+            
+    async def start_cleaning_games(self):
+        while self.is_logged_in:
+            await asyncio.sleep(3600) #checks every hour
+            print("Cleaned {} games".format(self.clean_games()))
             
     def clean_games(self):
         games_deleted = 0

@@ -17,19 +17,17 @@ for extension in extensions:
         
 @bot.event
 async def on_ready():
-    print('Logged in as')
-    print(bot.user.name)
-    print('------')
+    print('Logged in as\n{}\n{}'.format(bot.user.name, "------"))
         
     await bot.start_cleaning_games()
     
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(error, ctx):
     channel = ctx.message.channel
     if isinstance(error, commands.MissingRequiredArgument):
         msg = "You are missing arguments! Try using `{}help command`".format(bot.command_prefix)
     else:
-        msg = "Something went wrong. Tell Darian to check the log."
+        raise error
     await bot.send_message(channel, msg)
     
 bot.run('MjEwMTk1NDA5NzA3MDczNTM2.C0d-8A.d3hKVWpPFO87ab7emD3luVc6TXQ')

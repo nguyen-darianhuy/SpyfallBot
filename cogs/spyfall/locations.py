@@ -1,3 +1,9 @@
+class Location:
+    def __init__(self, name, roles):
+        self.name = name
+        self.generic_role = roles[0]
+        self.roles = roles[1:]
+"""
 Airplane (First Class Passenger, Air Marshall, Mechanic, Economy Class Passenger, Air Hostess, Second Pilot, Captain)
 
 Bank (Armored Car Driver, Manager, Consultant, Customer, Robber, Security Guard, Teller)
@@ -51,3 +57,4 @@ Supermarket (Customer, Cashier, Butcher, Janitor, Security Guard, Food Sample De
 Theater (Coat Check Lady, Prompter, Cashier, Visitor, Director, Actor, Crew Man)
 
 University (Graduate Student, Professor, Dean, Psychologist, Maintenance Man, Student, Janitor)
+"""

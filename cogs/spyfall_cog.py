@@ -22,11 +22,12 @@ class Spyfall:
             
 
     @commands.command(pass_context=True)        
-    async def leave(self, ctx, game_host : discord.Member):
+    async def leave(self, ctx, game_host : discord.Member = None):
+        if not game_host:
+            game_hot = ctx.message.author
+            
         if game_host not in self.bot.games:
             await self.bot.say("```ERR: {} isn't hosting a game!```")
-            await self.bot.say(game_host)
-            await self.bot.say(self.bot.games)
             return
             
         game = self.bot.games[game_host]
@@ -43,11 +44,15 @@ class Spyfall:
         except (RuntimeError, ValueError) as e:
             await self.bot.say(e)
             
-    @commands.command()
-    async def players(self, game_host : discord.Member):
+    @commands.command(pass_context=True)
+    async def players(self, ctx, game_host : discord.Member = None):
+        if not game_host:
+            game_host = ctx.message.author
+            
         if game_host not in self.bot.games:
             await self.bot.say("```ERR: {} isn't hosting a game!```")
             return
+            
         game = self.bot.games[game_host]
         await self.bot.say("{}: {}".format(game.declare_players_msg(), game.player_names))
 
@@ -58,6 +63,7 @@ class Spyfall:
     @commands.command(pass_context=True)        
     async def start(self, ctx, use_dlc=None):
         user = ctx.message.author
+        
         if user not in self.bot.games:
             self.bot.games[user] = Game(self.bot, host=user)
             self.bot.games[user].add_player(user)
@@ -86,7 +92,7 @@ class Spyfall:
         game = self.bot.games[user]
         try: 
             game.stop(reuse_players)
-            await self.bot.say("```Manually ended the Spyfall round.```")
+            await self.bot.say("```The Spyfall round has been ended.\nIt turns out that {} was the Spy at the {}!```".format(game.spy.display_name, game.current_location.name))
         except RuntimeError as e:
             await self.bot.say(e)
 

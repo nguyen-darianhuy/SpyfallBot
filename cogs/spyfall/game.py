@@ -1,6 +1,7 @@
 import discord, sys
-import asyncio
-import random, threading
+import random
+
+from .locations import Location
 
 class Game:
     """Represents a game of Spyfall."""
@@ -22,17 +23,41 @@ class Game:
             Stay on your toes!
             """
         self.locations = [
-            "Airplane", "Bank", "Beach", "Casino", 
-            "Cathedral", "Circus", "Corporate Party", "Crusader Army", 
-            "Day Spa", "Hospital", "Hotel", "Military Base", 
-            "Movie Studio", "Ocean Liner", "Passenger Train", "Pirate Ship", 
-            "Polar Station", "Police Station", "Restaurant" ,"School", 
-            "Service Station", "Space Station", "Submarine", "Supermarket", 
-            "Broadway Theater", "University"]
+            Location("Passenger Airplane", ["Economy Class Passenger", "First Class Passenger", "Air Marshall", "Flight Attendant", "Pilot", "Co-Pilot"]),
+            Location("Bank Robbery", ["Customer", "Manager", "Teller", "Security Guard", "Robber", "Getaway Car Driver"]),
+            Location("Beach", ["Beach Goer", "Beach Photographer", "Lifeguard", "Ice Cream Salesman", "Wave Surfer", "Snorkeler"]),
+            Location("Casino", ["Gambler", "Dealer", "Bartender", "Security Guard", "Manager", "Professional"]),
+            Location("Cathedral", ["Church Goer", "Sinner", "Priest", "Pope", "Cardinal", "Choirboy/girl"]),
+            Location("Circus Tent", ["Visitor", "Magician", "Clown", "Animal Trainer", "Juggler"]),
+            Location("Corporate Meeting", ["Desk-job Worker", "Intern", "Manager","Secretary"]),
+            Location("Crusader Army", ["Knight", "Archer", "Squire", "Imprisoned Saracen", "Monk"]),
+            Location("Day Spa", ["Customer", "Stylist", "Masseuse", "Manicurist", "Owner"]),
+            Location("Embassy", ["Refugee", "Diplomat", "Government Official", "Ambassador", "Security Guard"]),
+            Location("Hospital", ["Patient", "Nurse", "Surgeon", "Anesthesiologist", "Intern"]),
+            Location("Hotel", ["Guest", "Doorman", "Manager", "Bartender", "Bellboy"]),
+            Location("Military Base", ["Soldier", "Deserter", "Medic", "Colonel", "Sniper", "Commander"]),
+            Location("Movie Studio", ["Actor", "Cameraman", "Director", "Producer", "Stuntman", "Costume Artist"]),
+            Location("Ocean Liner", ["Rich Passenger", "Captain", "Musician", "Bartender", "Waiter"]),
+            Location("Passenger Train", ["Passenger", "Train Attendant", "Train Driver", "Stoker", "Railroad Baron"]),
+            Location("Pirate Ship", ["Pirate", "Captain", "Prisoner", "Cannoneer", "Piedmont Hills Student", "Cook"]),
+            Location("Polar Station", ["Scientist", "Geologist", "Expedition Leader", "Hydrologist", "Meteorologist"]),
+            Location("Police Station", ["Criminal", "Parole Officer", "Detective", "Police Officer", "Journalist"]),
+            Location("Restaurant", ["Customer", "Waiter", "Chef", "Food Critic", "Sous Chef"]),
+            Location("School", ["Student", "Gym Teacher", "Principal", "Janitor", "Cafeteria Lady", "Mr. Zhu"]),
+            Location("Auto Repair Station", ["Customer", "Mechanic", "Tire Specialist", "Carwash Girl", "Manager"]),
+            Location("Space Station", ["Astronaut", "Alien", "Engineer", "Scientist", "Pilot"]),
+            Location("Submarine", ["Sailor", "Sonar Technician", "Radioman", "Navigator", "Electrician"]),
+            Location("Supermarket", ["Customer", "Cashier", "Butcher", "Janitor", "Shelf Stocker"]),
+            Location("Broadway Theater", ["Visitor", "Actor", "Prompter", "Cashier", "Director", "Prima Donna"]),
+            Location("University", ["Undergraduate Student", "Graduate Student", "Professor", "Janitor", "Dean", "Frat Bro"]),
+        ]
         self.dlc_locations = [
-            "Hogwarts", "Death Star", "World War II Battlefield", "Senior Prom", "Terrorist Training Camp"]
+            #"Hogwarts", "Death Star", "World War II Battlefield", "Senior Prom" #to be included
+        ]
         self.dlc_added = False
         self.running = False
+        
+        self.current_location = None
             
     def add_player(self, player : discord.Member):
         if self.running:
@@ -55,21 +80,31 @@ class Game:
             raise RuntimeError("```ERR: {}'s Game is running!```".format(self.host.display_name))
         self.running = True
 
-        random.shuffle(self.players)
-        
         if not self.dlc_added and use_dlc:
             self.locations.extend(self.dlc_locations)
             self.dlc_added = True
-        current_location = random.choice(self.locations)
+            
+        random.shuffle(self.players)
+        
+        self.current_location = random.choice(self.locations)
+        self.locations.remove(self.current_location)
+        
+        current_roles = self.current_location.roles
+        random.shuffle(current_roles)
+        current_roles.append("Spy")
         
         async def deal_cards(self):
-            for i, player in enumerate(self.players):
-                card = "You are the spy!" if i == len(self.players)-1 else "Location: {}".format(current_location)
+            for player in self.players:
+                try:
+                    role = current_roles.pop()
+                except IndexError:
+                    role = self.current_location.generic_role
+                card = "Location: UNKNOWN\nYou are the Spy!" if role == "Spy" else "Location: {}\nRole: {}".format(self.current_location.name, role)
                 await self.bot.send_message(player, card)
-         
+        
         await deal_cards(self)
             
-    def stop(self, reuse_players):
+    def stop(self, reuse_players=True):
         if not self.running: 
             raise RuntimeError("```ERR: {}'s Game hasn't started!```".format(self.host.display_name))
         self.running = False
@@ -80,6 +115,10 @@ class Game:
     @property
     def player_names(self) -> str:
         return [player.display_name for player in self.players] if self.players else ":frowning:"
+        
+    @property
+    def spy(self):
+        return self.players[0]
         
     def declare_players_msg(self) -> str:
         msg = ""

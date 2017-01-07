@@ -19,7 +19,7 @@ class SpyfallBot(commands.Bot):
     """
     def __init__(self, command_prefix, msg_expire=0, **options):
         description = '''A bot that runs Spyfall. Built by Darian. Runs on async Python.'''
-        super().__init__(command_prefix, description=description)
+        super().__init__(command_prefix, description=description, **options)
         self.msg_expire = msg_expire
         self.games = {}
             

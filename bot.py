@@ -5,7 +5,8 @@ from discord.ext import commands
 import random
 
 class SpyfallBot(commands.Bot):
-    """Represents a discord Spyfall bot.
+    """
+    Represents a discord Spyfall bot.
     
     This class is a subclass of :class:'discord.commands.Bot'
     
@@ -13,9 +14,11 @@ class SpyfallBot(commands.Bot):
     -----------
     msg_expire : float
         The amount of time in seconds before the bot deletes its own message.
+    games : dict
+        A dictionary of Spyfall games being hosted at the moment.
     """
     def __init__(self, command_prefix, msg_expire=0, **options):
-        description = '''A bot that runs Spyfall. Built by Darian. Runs on Python.'''
+        description = '''A bot that runs Spyfall. Built by Darian. Runs on async Python.'''
         super().__init__(command_prefix, description=description)
         self.msg_expire = msg_expire
         self.games = {}

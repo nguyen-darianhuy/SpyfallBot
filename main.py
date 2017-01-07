@@ -26,8 +26,29 @@ async def on_command_error(error, ctx):
     channel = ctx.message.channel
     if isinstance(error, commands.MissingRequiredArgument):
         msg = "You are missing arguments! Try using `{}help command`".format(bot.command_prefix)
+    elif isinstance(error, commands.CommandInvokeError): #also borrowed from RoboDanny
+        print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
+        traceback.print_tb(error.original.__traceback__)
+        print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
+    elif isinstance(error, commands.CommandNotFound):
+        print("{} tried to use the command {}".format(ctx.message.author.display_name, error))
     else:
         raise error
+
     await bot.send_message(channel, msg)
+    
+@bot.command(hidden=True)
+async def shutdown():
+    """Shuts the bot down."""
+    await bot.say("Goodbye!")
+    
+    await bot.logout();
+    await bot.close();
+    raise KeyboardInterrupt("Bot Shutdown.")
+        
+@bot.command(hidden=True)
+async def test():
+    """A quick ping to test if the bot is working."""
+    await bot.say("I'm up, I'm up, I'm fucked up but I'm up.")
     
 bot.run('MjEwMTk1NDA5NzA3MDczNTM2.C0d-8A.d3hKVWpPFO87ab7emD3luVc6TXQ')

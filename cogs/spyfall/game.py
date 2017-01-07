@@ -99,18 +99,20 @@ class Game:
                     role = current_roles.pop()
                 except IndexError:
                     role = self.current_location.generic_role
-                card = "Location: UNKNOWN\nYou are the Spy!" if role == "Spy" else "Location: {}\nRole: {}".format(self.current_location.name, role)
+                    
+                card = "{}'s Spyfall game:\n".format(self.players[0])
+                if role == "Spy":
+                    card += "Location: UNKNOWN\nYou are the Spy!"
+                else:
+                    card += "Location: {}\nRole: {}".format(self.current_location.name, role)
                 await self.bot.send_message(player, card)
         
         await deal_cards(self)
             
-    def stop(self, reuse_players=True):
+    def stop(self):
         if not self.running: 
-            raise RuntimeError("```ERR: {}'s Game hasn't started!```".format(self.host.display_name))
+            raise RuntimeError("```ERR: Your game hasn't started!```")
         self.running = False
-        
-        if not reuse_players:
-            players = []
     
     @property
     def player_names(self) -> str:
@@ -121,7 +123,6 @@ class Game:
         return self.players[0]
         
     def declare_players_msg(self) -> str:
-        msg = ""
         player_amt = len(self.players)
         if player_amt > 1:
             msg = "There are now {} players".format(player_amt)

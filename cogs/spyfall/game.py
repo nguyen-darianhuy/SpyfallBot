@@ -1,8 +1,12 @@
 import discord, sys
 import random
 
-from .locations import Location
-
+class Location:
+    def __init__(self, name, roles):
+        self.name = name
+        self.generic_role = roles[0]
+        self.roles = roles[1:]
+        
 class Game:
     """Represents a game of Spyfall."""
     def __init__(self, bot, host, game_time=480):

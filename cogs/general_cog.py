@@ -16,7 +16,7 @@ class General:
             try:
                 players = author.voice.voice_channel.voice_members
             except AttributeError:
-                await self.bot.say("```Error: You are not in a voice channel and you have not provided any players!```")
+                raise commands.MissingRequiredArgument("You are not in a voice channel and you have not provided any players!")
                 return
         
         teammates = []
@@ -62,6 +62,35 @@ class General:
         """Sigh David"""
         message = "Ya dude no problem" if ctx.message.author.id == "137022865458331649" else "Suck what?"
         await self.bot.say(message, delete_after=self.bot.msg_expire*2)
+        
+    @commands.command(pass_context=True)
+    async def ping(self, ctx, poor_soul : discord.Member = None, amount : int = None):
+        """Sends a ping to someone.\nEX: ?ping @Darian 10\nNOTE: Max pings at once is 9"""
+        if not poor_soul:
+            raise commands.MissingRequiredArgument("Must specify recipient")
+            
+        author = ctx.message.author
+        if not input or int(input) > 9:
+            pings = 9
+        else:
+            pings = int(input)
+        
+        ping_msg = ("Hello {0.display_name}, are you there?\n"
+                    "{1.display_name}} would like to tell you to".format(poor_soul, author))
+        await self.bot.send_message(poor_soul, ping_msg)
+        for i in range(0,pings):
+            midpoint = (pings-1)/2
+            if i < midpoint:
+                ping_msg = "respond"
+            elif i == midpoint:
+                ping_msg = "resPOND"
+            elif i > midpoint:
+                ping_msg = "RESPOND"
+            await self.bot.send_message(poor_soul, ping_msg)
+            await asyncio.sleep(1)
+        
+        msg = "{0.display_name} has been sent {1} pings.".format(recipient, amount)
+        self.bot.send_message(author, msg)
 
 def setup(bot):
     bot.add_cog(General(bot))

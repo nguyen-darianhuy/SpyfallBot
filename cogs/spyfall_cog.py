@@ -48,13 +48,13 @@ class Spyfall:
     @commands.command(pass_context=True)
     async def players(self, ctx, game_host : discord.Member = None):
         """List the players in someone's Spyfall game.\nEX: ?players @Lily\nNOTE: The host can use it without naming the game host."""
+        player = ctx.message.author
         if not game_host:
-            game_host = ctx.message.author
-            
+            game_host = player
         if game_host not in self.bot.games:
-            await self.bot.say("```ERR: {} isn't hosting a game!```".format(player.mention))
+            await self.bot.say("```ERR: {} isn't hosting a game!```".format(game_host.display_name))
             return
-            
+        
         game = self.bot.games[game_host]
         await self.bot.say("{}: {}".format(game.declare_players_msg(), game.player_names))
 

@@ -46,6 +46,8 @@ class SpyfallBot(commands.Bot):
         gameslist = "```Gamehost            Players\n"
         gameslist += "-"*27
         gameslist += "\n"
+        if not self.games:
+            gameslist += "There are no games being hosted right now! :frowning:"
         for game_host, game in self.games.items():
             gameslist += "{:20}{:7}\n".format("@"+game_host.display_name, len(game.players))
         return gameslist+"```"

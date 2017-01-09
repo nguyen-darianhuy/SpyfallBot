@@ -27,7 +27,7 @@ class SpyfallBot(commands.Bot):
         while self.is_logged_in:
             await asyncio.sleep(3600) #checks every hour
             print("Cleaned {} games".format(self.clean_games()))
-            
+        
     def clean_games(self):
         games_deleted = 0
         
@@ -37,7 +37,7 @@ class SpyfallBot(commands.Bot):
                 games_deleted += 1
                 
         return games_deleted
-    
+        
     #Override
     def say(self, *args, **kwargs):
         return super().say(*args, delete_after=self.msg_expire)

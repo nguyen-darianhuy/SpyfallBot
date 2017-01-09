@@ -1,8 +1,9 @@
 from bot import SpyfallBot
 import discord, sys
+import traceback
 from discord.ext import commands
 
-bot = SpyfallBot(command_prefix='?', msg_expire=10, help_attrs=dict(hidden=True))
+bot = SpyfallBot(command_prefix='?', msg_expire=30, help_attrs=dict(hidden=True))
 
 extensions = [
     "cogs.general_cog",
@@ -20,8 +21,6 @@ for extension in extensions:
 @bot.event
 async def on_ready():
     print('Logged in as:\n{}\n{}'.format(bot.user.name, "-"*len(bot.user.name)))
-        
-    await bot.start_cleaning_games()
     
 @bot.event
 async def on_command_error(error, ctx):
@@ -59,4 +58,5 @@ async def test():
     """A quick ping to test if the bot is working."""
     await bot.say("I'm up, I'm up, I'm fucked up but I'm up.")
     
+bot.loop.create_task(bot.start_cleaning_games())
 bot.run('MjEwMTk1NDA5NzA3MDczNTM2.C0d-8A.d3hKVWpPFO87ab7emD3luVc6TXQ')

@@ -51,11 +51,6 @@ class General:
 
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await self.bot.say(result)
-
-    @commands.command()
-    async def joined(self, member : discord.Member):
-        """Says when a member joined."""
-        await self.bot.say('{0.name} joined in {0.joined_at}'.format(member))
         
     @commands.command(pass_context=True)
     async def suckmeoff(self, ctx):
@@ -92,5 +87,18 @@ class General:
         msg = "{0.display_name} has been sent {1} pings.".format(recipient, amount)
         self.bot.send_message(author, msg)
 
+    @commands.command()
+    async def joined(self, member : discord.Member):
+        """Says when a member joined."""
+        await self.bot.say('{0.name} joined in {0.joined_at}'.format(member))
+        
+    @commands.command(pass_context=True)
+    async def clear(self, ctx):
+        """Clears command invocations and bot messages."""
+        channel = ctx.message.channel
+        purged = await self.bot.purge_from(channel, limit=200,
+                                           check=lambda msg: msg.author == self.bot.user or msg.content.startswith("?"))
+        await self.bot.say("Cleared up {} messages. :put_litter_in_its_place:".format(len(purged)))
+    
 def setup(bot):
     bot.add_cog(General(bot))

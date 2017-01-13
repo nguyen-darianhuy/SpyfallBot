@@ -26,7 +26,6 @@ async def on_ready():
 async def on_command_error(error, ctx):
     channel = ctx.message.channel
     author = ctx.message.author
-    command = ctx.command
     msg = ""
     #user errors
     if isinstance(error, commands.MissingRequiredArgument):
@@ -42,7 +41,10 @@ async def on_command_error(error, ctx):
         traceback.print_tb(error.original.__traceback__)
         print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
     elif isinstance(error, commands.CommandNotFound):
+        command = str(error).split()[1]
         print("{0.display_name} tried to use the command {1}".format(author, command))
+    else:
+        raise error
     
 @bot.command(hidden=True)
 async def shutdown():
